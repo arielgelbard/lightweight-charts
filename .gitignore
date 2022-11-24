@@ -32,3 +32,5 @@ debug.html
 
 # graphics tests out data
 /tests/e2e/graphics/.gendata/
+
+.DS_Store
