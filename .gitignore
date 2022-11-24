@@ -18,7 +18,7 @@ debug.html
 
 # artifacts
 /lib/
-/dist/
+
 /src/**/*.js
 /src/**/*.d.ts
 /website/docs/api/
