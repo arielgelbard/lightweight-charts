@@ -2,6 +2,8 @@
 
 # This is a custom version made by arielgelbard on github.
 
+- To Build, run: `npm run build:prod`
+
 - It implements boxes, being able to extend the box with a 0 value, and price dragging ability/event
 - Removed git hooks to be able to commit these changes
 
