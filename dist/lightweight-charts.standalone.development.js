@@ -1,6 +1,6 @@
 /*!
  * @license
- * TradingView Lightweight Charts v3.8.0-dev+202212010055
+ * TradingView Lightweight Charts v3.8.0-dev+202212010124
  * Copyright (c) 2020 TradingView, Inc.
  * Licensed under Apache License 2.0 https://www.apache.org/licenses/LICENSE-2.0
  */
@@ -4592,7 +4592,9 @@
             return this._private__indexedMarkers;
         };
         Series.prototype.createPriceLine = function (options) {
+            console.log("here1", options);
             var result = new CustomPriceLine(this, options);
+            console.log("here2", result);
             this._private__customPriceLines.push(result);
             this.model().updateSource(this);
             return result;
@@ -12690,7 +12692,7 @@
      * Returns the current version as a string. For example `'3.3.0'`.
      */
     function version() {
-        return "3.8.0-dev+202212010055";
+        return "3.8.0-dev+202212010124";
     }
 
     var LightweightChartsModule = /*#__PURE__*/Object.freeze({
