@@ -7,27 +7,18 @@ declare abstract class DataSource implements IDataSource {
 	setZorder(zorder: number): void;
 	priceScale(): PriceScale | null;
 	setPriceScale(priceScale: PriceScale | null): void;
-	abstract priceAxisViews(
-		pane?: Pane,
-		priceScale?: PriceScale
-	): readonly IPriceAxisView[];
+	abstract priceAxisViews(pane?: Pane, priceScale?: PriceScale): readonly IPriceAxisView[];
 	abstract paneViews(pane?: Pane): readonly IPaneView[];
 	timeAxisViews(): readonly ITimeAxisView[];
 	visible(): boolean;
 	abstract updateAllViews(): void;
 }
-declare abstract class PriceDataSource
-	extends DataSource
-	implements IPriceDataSource
-{
+declare abstract class PriceDataSource extends DataSource implements IPriceDataSource {
 	private readonly _model;
 	constructor(model: ChartModel);
 	model(): ChartModel;
 	abstract minMove(): number;
-	abstract autoscaleInfo(
-		startTimePoint: TimePointIndex,
-		endTimePoint: TimePointIndex
-	): AutoscaleInfoImpl | null;
+	abstract autoscaleInfo(startTimePoint: TimePointIndex, endTimePoint: TimePointIndex): AutoscaleInfoImpl | null;
 	abstract firstValue(): FirstValue | null;
 	abstract formatter(): IPriceFormatter;
 	abstract priceLineColor(lastBarColor: string): string;
@@ -35,10 +26,7 @@ declare abstract class PriceDataSource
 declare class AutoscaleInfoImpl {
 	private readonly _priceRange;
 	private readonly _margins;
-	constructor(
-		priceRange: PriceRangeImpl | null,
-		margins?: AutoScaleMargins | null
-	);
+	constructor(priceRange: PriceRangeImpl | null, margins?: AutoScaleMargins | null);
 	priceRange(): PriceRangeImpl | null;
 	margins(): AutoScaleMargins | null;
 	toRaw(): AutoscaleInfo | null;
@@ -63,10 +51,7 @@ declare class ChartModel implements IDestroyable {
 	private _backgroundTopColor;
 	private _backgroundBottomColor;
 	private _gradientColorsCache;
-	constructor(
-		invalidateHandler: InvalidateHandler,
-		options: ChartOptionsInternal
-	);
+	constructor(invalidateHandler: InvalidateHandler, options: ChartOptionsInternal);
 	fullUpdate(): void;
 	lightUpdate(): void;
 	cursorUpdate(): void;
@@ -75,10 +60,7 @@ declare class ChartModel implements IDestroyable {
 	setHoveredSource(source: HoveredSource | null): void;
 	options(): Readonly<ChartOptionsInternal>;
 	applyOptions(options: DeepPartial<ChartOptionsInternal>): void;
-	applyPriceScaleOptions(
-		priceScaleId: string,
-		options: DeepPartial<PriceScaleOptions>
-	): void;
+	applyPriceScaleOptions(priceScaleId: string, options: DeepPartial<PriceScaleOptions>): void;
 	findPriceScale(priceScaleId: string): PriceScaleOnPane | null;
 	timeScale(): TimeScale;
 	panes(): readonly Pane[];
@@ -114,26 +96,16 @@ declare class ChartModel implements IDestroyable {
 	setAndSaveCurrentPosition(x: Coordinate, y: Coordinate, pane: Pane): void;
 	clearCurrentPosition(): void;
 	updateCrosshair(): void;
-	updateTimeScale(
-		newBaseIndex: TimePointIndex | null,
-		newPoints?: readonly TimeScalePoint[],
-		firstChangedPointIndex?: number
-	): void;
+	updateTimeScale(newBaseIndex: TimePointIndex | null, newPoints?: readonly TimeScalePoint[], firstChangedPointIndex?: number): void;
 	recalculatePane(pane: Pane | null): void;
 	paneForSource(source: IPriceDataSource): Pane | null;
 	recalculateAllPanes(): void;
-	fireCustomPriceLineDragged(
-		customPriceLine: CustomPriceLine,
-		fromPriceString: string
-	): void;
+	fireCustomPriceLineDragged(customPriceLine: CustomPriceLine, fromPriceString: string): void;
 	destroy(): void;
 	rendererOptionsProvider(): PriceAxisRendererOptionsProvider;
 	priceAxisRendererOptions(): Readonly<PriceAxisViewRendererOptions>;
 	priceScalesOptionsChanged(): ISubscription;
-	createSeries<T extends SeriesType>(
-		seriesType: T,
-		options: SeriesOptionsMap[T]
-	): Series<T>;
+	createSeries<T extends SeriesType>(seriesType: T, options: SeriesOptionsMap[T]): Series<T>;
 	removeSeries(series: Series): void;
 	moveSeriesToScale(series: Series, targetScaleId: string): void;
 	fitContent(): void;
@@ -271,11 +243,7 @@ declare class Pane implements IDestroyable {
 	setHeight(height: number): void;
 	dataSources(): readonly IPriceDataSource[];
 	isOverlay(source: IPriceDataSource): boolean;
-	addDataSource(
-		source: IPriceDataSource,
-		targetScaleId: string,
-		zOrder?: number
-	): void;
+	addDataSource(source: IPriceDataSource, targetScaleId: string, zOrder?: number): void;
 	removeDataSource(source: IPriceDataSource): void;
 	priceScalePosition(priceScale: PriceScale): PriceScalePosition;
 	leftPriceScale(): PriceScale;
@@ -313,16 +281,9 @@ declare class PlotList<PlotRowType extends PlotRow = PlotRow> {
 	isEmpty(): boolean;
 	contains(index: TimePointIndex): boolean;
 	valueAt(index: TimePointIndex): PlotRowType | null;
-	search(
-		index: TimePointIndex,
-		searchMode?: PlotRowSearchMode
-	): PlotRowType | null;
+	search(index: TimePointIndex, searchMode?: PlotRowSearchMode): PlotRowType | null;
 	rows(): readonly PlotRowType[];
-	minMaxOnRangeCached(
-		start: TimePointIndex,
-		end: TimePointIndex,
-		plots: readonly PlotRowValueIndex[]
-	): MinMax | null;
+	minMaxOnRangeCached(start: TimePointIndex, end: TimePointIndex, plots: readonly PlotRowValueIndex[]): MinMax | null;
 	setData(plotRows: readonly PlotRowType[]): void;
 	private _indexAt;
 	private _valueAt;
@@ -382,12 +343,7 @@ declare class PriceScale {
 	private _scrollStartPoint;
 	private _formatter;
 	private _logFormula;
-	constructor(
-		id: string,
-		options: PriceScaleOptions,
-		layoutOptions: LayoutOptionsInternal,
-		localizationOptions: LocalizationOptions
-	);
+	constructor(id: string, options: PriceScaleOptions, layoutOptions: LayoutOptionsInternal, localizationOptions: LocalizationOptions);
 	id(): string;
 	options(): Readonly<PriceScaleOptions>;
 	applyOptions(options: DeepPartial<PriceScaleOptions>): void;
@@ -403,23 +359,12 @@ declare class PriceScale {
 	setHeight(value: number): void;
 	internalHeight(): number;
 	priceRange(): PriceRangeImpl | null;
-	setPriceRange(
-		newPriceRange: PriceRangeImpl | null,
-		isForceSetValue?: boolean
-	): void;
+	setPriceRange(newPriceRange: PriceRangeImpl | null, isForceSetValue?: boolean): void;
 	isEmpty(): boolean;
 	invertedCoordinate(coordinate: number): number;
 	priceToCoordinate(price: number, baseValue: number): Coordinate;
-	pointsArrayToCoordinates<T extends PricedValue>(
-		points: T[],
-		baseValue: number,
-		visibleRange?: SeriesItemsIndexesRange
-	): void;
-	barPricesToCoordinates<T extends BarPrices & BarCoordinates>(
-		pricesList: T[],
-		baseValue: number,
-		visibleRange?: SeriesItemsIndexesRange
-	): void;
+	pointsArrayToCoordinates<T extends PricedValue>(points: T[], baseValue: number, visibleRange?: SeriesItemsIndexesRange): void;
+	barPricesToCoordinates<T extends BarPrices & BarCoordinates>(pricesList: T[], baseValue: number, visibleRange?: SeriesItemsIndexesRange): void;
 	coordinateToPrice(coordinate: Coordinate, baseValue: number): BarPrice;
 	logicalToPrice(logical: number, baseValue: number): BarPrice;
 	dataSources(): readonly IPriceDataSource[];
@@ -471,10 +416,7 @@ declare class RangeImpl<T extends number> {
 	contains(index: T): boolean;
 	equals(other: RangeImpl<T>): boolean;
 }
-declare class Series<T extends SeriesType = SeriesType>
-	extends PriceDataSource
-	implements IDestroyable
-{
+declare class Series<T extends SeriesType = SeriesType> extends PriceDataSource implements IDestroyable {
 	private readonly _seriesType;
 	private _data;
 	private readonly _priceAxisViews;
@@ -494,21 +436,14 @@ declare class Series<T extends SeriesType = SeriesType>
 	private readonly _customBoxes;
 	createBox(options: BoxOptions): CustomBox;
 	removeBox(box: CustomBox): void;
-	constructor(
-		model: ChartModel,
-		options: SeriesOptionsInternal<T>,
-		seriesType: T
-	);
+	constructor(model: ChartModel, options: SeriesOptionsInternal<T>, seriesType: T);
 	destroy(): void;
 	priceLineColor(lastBarColor: string): string;
 	lastValueData(globalLast: boolean): LastValueDataResult;
 	barColorer(): SeriesBarColorer;
 	options(): Readonly<SeriesOptionsMap[T]>;
 	applyOptions(options: SeriesPartialOptionsInternal<T>): void;
-	setData(
-		data: readonly SeriesPlotRow<T>[],
-		updateInfo?: SeriesUpdateInfo
-	): void;
+	setData(data: readonly SeriesPlotRow<T>[], updateInfo?: SeriesUpdateInfo): void;
 	setMarkers(data: SeriesMarker<TimePoint>[]): void;
 	indexedMarkers(): InternalSeriesMarker<TimePointIndex>[];
 	createPriceLine(options: PriceLineOptions): CustomPriceLine;
@@ -522,10 +457,7 @@ declare class Series<T extends SeriesType = SeriesType>
 	topPaneViews(pane: Pane): readonly IPaneView[];
 	paneViews(): readonly IPaneView[];
 	priceAxisViews(pane: Pane, priceScale: PriceScale): readonly IPriceAxisView[];
-	autoscaleInfo(
-		startTimePoint: TimePointIndex,
-		endTimePoint: TimePointIndex
-	): AutoscaleInfoImpl | null;
+	autoscaleInfo(startTimePoint: TimePointIndex, endTimePoint: TimePointIndex): AutoscaleInfoImpl | null;
 	minMove(): number;
 	formatter(): IPriceFormatter;
 	updateAllViews(): void;
@@ -545,10 +477,7 @@ declare class Series<T extends SeriesType = SeriesType>
 declare class SeriesBarColorer {
 	private _series;
 	constructor(series: Series);
-	barStyle(
-		barIndex: TimePointIndex,
-		precomputedBars?: PrecomputedBars
-	): BarColorerStyle;
+	barStyle(barIndex: TimePointIndex, precomputedBars?: PrecomputedBars): BarColorerStyle;
 	private _barStyle;
 	private _candleStyle;
 	private _areaStyle;
@@ -565,21 +494,13 @@ declare class TextWidthCache {
 	private _keysIndex;
 	constructor(size?: number);
 	reset(): void;
-	measureText(
-		ctx: CanvasCtxLike,
-		text: string,
-		optimizationReplacementRe?: RegExp
-	): number;
+	measureText(ctx: CanvasCtxLike, text: string, optimizationReplacementRe?: RegExp): number;
 }
 declare class TimeAxisViewRenderer implements ITimeAxisViewRenderer {
 	private _data;
 	constructor();
 	setData(data: TimeAxisViewRendererData): void;
-	draw(
-		ctx: CanvasRenderingContext2D,
-		rendererOptions: TimeAxisViewRendererOptions,
-		pixelRatio: number
-	): void;
+	draw(ctx: CanvasRenderingContext2D, rendererOptions: TimeAxisViewRendererOptions, pixelRatio: number): void;
 }
 declare class TimeScale {
 	private readonly _options;
@@ -603,19 +524,10 @@ declare class TimeScale {
 	private _commonTransitionStartState;
 	private _timeMarksCache;
 	private _labels;
-	constructor(
-		model: ChartModel,
-		options: TimeScaleOptions,
-		localizationOptions: LocalizationOptions
-	);
+	constructor(model: ChartModel, options: TimeScaleOptions, localizationOptions: LocalizationOptions);
 	options(): Readonly<TimeScaleOptions>;
-	applyLocalizationOptions(
-		localizationOptions: DeepPartial<LocalizationOptions>
-	): void;
-	applyOptions(
-		options: DeepPartial<TimeScaleOptions>,
-		localizationOptions?: DeepPartial<LocalizationOptions>
-	): void;
+	applyLocalizationOptions(localizationOptions: DeepPartial<LocalizationOptions>): void;
+	applyOptions(options: DeepPartial<TimeScaleOptions>, localizationOptions?: DeepPartial<LocalizationOptions>): void;
 	indexToTime(index: TimePointIndex): TimePoint | null;
 	timeToIndex(time: TimePoint, findNearest: boolean): TimePointIndex | null;
 	isEmpty(): boolean;
@@ -627,10 +539,7 @@ declare class TimeScale {
 	width(): number;
 	setWidth(width: number): void;
 	indexToCoordinate(index: TimePointIndex): Coordinate;
-	indexesToCoordinates<T extends TimedValue>(
-		points: T[],
-		visibleRange?: SeriesItemsIndexesRange
-	): void;
+	indexesToCoordinates<T extends TimedValue>(points: T[], visibleRange?: SeriesItemsIndexesRange): void;
 	coordinateToIndex(x: Coordinate): TimePointIndex;
 	setRightOffset(offset: number): void;
 	barSpacing(): number;
@@ -656,10 +565,7 @@ declare class TimeScale {
 	endScroll(): void;
 	scrollToRealTime(): void;
 	scrollToOffsetAnimated(offset: number, animationDuration?: number): void;
-	update(
-		newPoints: readonly TimeScalePoint[],
-		firstChangedPointIndex: number
-	): void;
+	update(newPoints: readonly TimeScalePoint[], firstChangedPointIndex: number): void;
 	visibleBarsChanged(): ISubscription;
 	logicalRangeChanged(): ISubscription;
 	optionsApplied(): ISubscription;
@@ -704,12 +610,12 @@ export declare const enum InvalidationLevel {
 	None = 0,
 	Cursor = 1,
 	Light = 2,
-	Full = 3,
+	Full = 3
 }
 export declare const enum PlotRowSearchMode {
 	NearestLeft = -1,
 	Exact = 0,
-	NearestRight = 1,
+	NearestRight = 1
 }
 /**
  * Plot's index in plot list tuple for series
@@ -718,7 +624,7 @@ export declare const enum PlotRowValueIndex {
 	Open = 0,
 	High = 1,
 	Low = 2,
-	Close = 3,
+	Close = 3
 }
 /**
  * Describes a weight of tick mark, i.e. a part of a time that changed since previous time.
@@ -739,14 +645,14 @@ export declare const enum TickMarkWeight {
 	Hour12 = 33,
 	Day = 50,
 	Month = 60,
-	Year = 70,
+	Year = 70
 }
 export declare const enum TimeScaleInvalidationType {
 	FitContent = 0,
 	ApplyRange = 1,
 	ApplyBarSpacing = 2,
 	ApplyRightOffset = 3,
-	Reset = 4,
+	Reset = 4
 }
 /**
  * Represents a type of color.
@@ -755,7 +661,7 @@ export declare enum ColorType {
 	/** Solid color */
 	Solid = "solid",
 	/** Vertical gradient color */
-	VerticalGradient = "gradient",
+	VerticalGradient = "gradient"
 }
 /**
  * Represents the crosshair mode.
@@ -768,7 +674,7 @@ export declare enum CrosshairMode {
 	/**
 	 * This mode sticks crosshair's horizontal line to the price value of a single-value series or to the close price of OHLC-based series.
 	 */
-	Magnet = 1,
+	Magnet = 1
 }
 /**
  * Represents the type of the last price animation for series such as area or line.
@@ -785,7 +691,7 @@ export declare enum LastPriceAnimationMode {
 	/**
 	 * Animation is active after new data.
 	 */
-	OnDataUpdate = 2,
+	OnDataUpdate = 2
 }
 /**
  * Represents the possible line styles.
@@ -810,7 +716,7 @@ export declare enum LineStyle {
 	/**
 	 * A dottled line with more space between dots.
 	 */
-	SparseDotted = 4,
+	SparseDotted = 4
 }
 /**
  * Represents the possible line types.
@@ -823,7 +729,7 @@ export declare enum LineType {
 	/**
 	 * A stepped line.
 	 */
-	WithSteps = 1,
+	WithSteps = 1
 }
 /**
  * Represents the source of data to be used for the horizontal price line.
@@ -836,7 +742,7 @@ export declare enum PriceLineSource {
 	/**
 	 * Use the last visible data of the chart viewport.
 	 */
-	LastVisible = 1,
+	LastVisible = 1
 }
 /**
  * Represents the price scale mode.
@@ -858,7 +764,7 @@ export declare enum PriceScaleMode {
 	/**
 	 * The same as percentage mode, but the first value is moved to 100.
 	 */
-	IndexedTo100 = 3,
+	IndexedTo100 = 3
 }
 /**
  * Represents the type of a tick mark on the time axis.
@@ -883,7 +789,7 @@ export declare enum TickMarkType {
 	/**
 	 * A time with seconds.
 	 */
-	TimeWithSeconds = 4,
+	TimeWithSeconds = 4
 }
 /**
  * Determine how to exit the tracking mode.
@@ -899,7 +805,7 @@ export declare enum TrackingModeExitMode {
 	/**
 	 * Tracking Mode will be deactivated on the next tap event.
 	 */
-	OnNextTap = 1,
+	OnNextTap = 1
 }
 /**
  * This function is the main entry point of the Lightweight Charting Library.
@@ -908,10 +814,7 @@ export declare enum TrackingModeExitMode {
  * @param options - Any subset of options to be applied at start.
  * @returns An interface to the created chart
  */
-export declare function createChart(
-	container: string | HTMLElement,
-	options?: DeepPartial<ChartOptions>
-): IChartApi;
+export declare function createChart(container: string | HTMLElement, options?: DeepPartial<ChartOptions>): IChartApi;
 /**
  * Check if a time value is a business day object.
  *
@@ -937,16 +840,13 @@ export declare type AreaSeriesOptions = SeriesOptions<AreaStyleOptions>;
 /**
  * Represents area series options where all properties are optional.
  */
-export declare type AreaSeriesPartialOptions =
-	SeriesPartialOptions<AreaStyleOptions>;
+export declare type AreaSeriesPartialOptions = SeriesPartialOptions<AreaStyleOptions>;
 /**
  * A custom function used to get autoscale information.
  *
  * @param baseImplementation - The default implementation of autoscale algorithm, you can use it to adjust the result.
  */
-export declare type AutoscaleInfoProvider = (
-	baseImplementation: () => AutoscaleInfo | null
-) => AutoscaleInfo | null;
+export declare type AutoscaleInfoProvider = (baseImplementation: () => AutoscaleInfo | null) => AutoscaleInfo | null;
 /**
  * Represents the background color of the chart.
  */
@@ -962,8 +862,7 @@ export declare type BarSeriesOptions = SeriesOptions<BarStyleOptions>;
 /**
  * Represents bar series options where all properties are options.
  */
-export declare type BarSeriesPartialOptions =
-	SeriesPartialOptions<BarStyleOptions>;
+export declare type BarSeriesPartialOptions = SeriesPartialOptions<BarStyleOptions>;
 /**
  * Represents a type of a base value of baseline series type.
  */
@@ -975,30 +874,18 @@ export declare type BaselineSeriesOptions = SeriesOptions<BaselineStyleOptions>;
 /**
  * Represents baseline series options where all properties are options.
  */
-export declare type BaselineSeriesPartialOptions =
-	SeriesPartialOptions<BaselineStyleOptions>;
-export declare type Callback<T1 = void, T2 = void> = (
-	param1: T1,
-	param2: T2
-) => void;
+export declare type BaselineSeriesPartialOptions = SeriesPartialOptions<BaselineStyleOptions>;
+export declare type Callback<T1 = void, T2 = void> = (param1: T1, param2: T2) => void;
 /**
  * Represents candlestick series options.
  */
-export declare type CandlestickSeriesOptions =
-	SeriesOptions<CandlestickStyleOptions>;
+export declare type CandlestickSeriesOptions = SeriesOptions<CandlestickStyleOptions>;
 /**
  * Represents candlestick series options where all properties are optional.
  */
-export declare type CandlestickSeriesPartialOptions =
-	SeriesPartialOptions<CandlestickStyleOptions>;
-export declare type CanvasCtxLike = Pick<
-	CanvasRenderingContext2D,
-	"measureText"
->;
-export declare type ChartOptionsInternal = Omit<
-	ChartOptions,
-	"handleScroll" | "handleScale" | "priceScale" | "layout"
-> & {
+export declare type CandlestickSeriesPartialOptions = SeriesPartialOptions<CandlestickStyleOptions>;
+export declare type CanvasCtxLike = Pick<CanvasRenderingContext2D, "measureText">;
+export declare type ChartOptionsInternal = Omit<ChartOptions, "handleScroll" | "handleScale" | "priceScale" | "layout"> & {
 	/** @public */
 	handleScroll: HandleScrollOptions;
 	/** @public */
@@ -1010,48 +897,32 @@ export declare type ChartOptionsInternal = Omit<
  * Represents a coordiate as a `number`.
  */
 export declare type Coordinate = Nominal<number, "Coordinate">;
-export declare type CustomPriceLineDraggedEventHandler = (
-	param: CustomPriceLineDraggedEventParams
-) => void;
+export declare type CustomPriceLineDraggedEventHandler = (param: CustomPriceLineDraggedEventParams) => void;
 /**
  * Represents a type `T` where every property is optional.
  */
 export declare type DeepPartial<T> = {
-	[P in keyof T]?: T[P] extends (infer U)[]
-		? DeepPartial<U>[]
-		: T[P] extends readonly (infer X)[]
-		? readonly DeepPartial<X>[]
-		: DeepPartial<T[P]>;
+	[P in keyof T]?: T[P] extends (infer U)[] ? DeepPartial<U>[] : T[P] extends readonly (infer X)[] ? readonly DeepPartial<X>[] : DeepPartial<T[P]>;
 };
-export declare type HandleScaleOptionsInternal = Omit<
-	HandleScaleOptions,
-	"axisPressedMouseMove"
-> & {
+export declare type HandleScaleOptionsInternal = Omit<HandleScaleOptions, "axisPressedMouseMove"> & {
 	/** @public */
 	axisPressedMouseMove: AxisPressedMouseMoveOptions;
 };
 /**
  * Represents histogram series options.
  */
-export declare type HistogramSeriesOptions =
-	SeriesOptions<HistogramStyleOptions>;
+export declare type HistogramSeriesOptions = SeriesOptions<HistogramStyleOptions>;
 /**
  * Represents histogram series options where all properties are optional.
  */
-export declare type HistogramSeriesPartialOptions =
-	SeriesPartialOptions<HistogramStyleOptions>;
+export declare type HistogramSeriesPartialOptions = SeriesPartialOptions<HistogramStyleOptions>;
 /**
  * Represents a horizontal alignment.
  */
 export declare type HorzAlign = "left" | "center" | "right";
 export declare type InvalidateHandler = (mask: InvalidateMask) => void;
-export declare type LastValueDataResult =
-	| LastValueDataResultWithoutData
-	| LastValueDataResultWithData;
-export declare type LayoutOptionsInternal = Omit<
-	LayoutOptions,
-	"backgroundColor"
->;
+export declare type LastValueDataResult = LastValueDataResultWithoutData | LastValueDataResultWithData;
+export declare type LayoutOptionsInternal = Omit<LayoutOptions, "backgroundColor">;
 /**
  * Represents line series options.
  */
@@ -1059,8 +930,7 @@ export declare type LineSeriesOptions = SeriesOptions<LineStyleOptions>;
 /**
  * Represents line series options where all properties are optional.
  */
-export declare type LineSeriesPartialOptions =
-	SeriesPartialOptions<LineStyleOptions>;
+export declare type LineSeriesPartialOptions = SeriesPartialOptions<LineStyleOptions>;
 /**
  * Represents the width of a line.
  */
@@ -1085,9 +955,7 @@ export declare type LogicalRange = Range<Logical>;
 /**
  * A custom function used to handle changes to the time scale's logical range.
  */
-export declare type LogicalRangeChangeEventHandler = (
-	logicalRange: LogicalRange | null
-) => void;
+export declare type LogicalRangeChangeEventHandler = (logicalRange: LogicalRange | null) => void;
 /**
  * A custom function use to handle mouse events.
  */
@@ -1115,11 +983,13 @@ export declare type Nominal<T, Name extends string> = T & {
 /**
  * Represents overlay price scale options.
  */
-export declare type OverlayPriceScaleOptions = Omit<
-	PriceScaleOptions,
-	"visible" | "autoScale"
->;
-export declare type PlotRowValue = [number, number, number, number];
+export declare type OverlayPriceScaleOptions = Omit<PriceScaleOptions, "visible" | "autoScale">;
+export declare type PlotRowValue = [
+	number,
+	number,
+	number,
+	number
+];
 /**
  * Represents information used to format prices.
  */
@@ -1137,32 +1007,21 @@ export declare type SeriesMarkerPosition = "aboveBar" | "belowBar" | "inBar";
 /**
  * Represents the shape of a series marker.
  */
-export declare type SeriesMarkerShape =
-	| "circle"
-	| "square"
-	| "arrowUp"
-	| "arrowDown";
+export declare type SeriesMarkerShape = "circle" | "square" | "arrowUp" | "arrowDown";
 /**
  * Represents the intersection of a series type `T`'s options and common series options.
  *
  * @see {@link SeriesOptionsCommon} for common options.
  */
 export declare type SeriesOptions<T> = T & SeriesOptionsCommon;
-export declare type SeriesOptionsInternal<T extends SeriesType = SeriesType> =
-	SeriesOptionsMap[T];
+export declare type SeriesOptionsInternal<T extends SeriesType = SeriesType> = SeriesOptionsMap[T];
 /**
  * Represents a {@link SeriesOptions} where every property is optional.
  */
-export declare type SeriesPartialOptions<T> = DeepPartial<
-	T & SeriesOptionsCommon
->;
-export declare type SeriesPartialOptionsInternal<
-	T extends SeriesType = SeriesType
-> = SeriesPartialOptionsMap[T];
-export declare type SeriesPlotList<T extends SeriesType = SeriesType> =
-	PlotList<SeriesPlotRow<T>>;
-export declare type SeriesPlotRow<T extends SeriesType = SeriesType> =
-	SeriesPlotRowTypeAtTypeMap[T];
+export declare type SeriesPartialOptions<T> = DeepPartial<T & SeriesOptionsCommon>;
+export declare type SeriesPartialOptionsInternal<T extends SeriesType = SeriesType> = SeriesPartialOptionsMap[T];
+export declare type SeriesPlotList<T extends SeriesType = SeriesType> = PlotList<SeriesPlotRow<T>>;
+export declare type SeriesPlotRow<T extends SeriesType = SeriesType> = SeriesPlotRowTypeAtTypeMap[T];
 /**
  * Represents a type of series.
  *
@@ -1172,10 +1031,7 @@ export declare type SeriesType = keyof SeriesOptionsMap;
 /**
  * A custom function used to handle changes to the time scale's size.
  */
-export declare type SizeChangeEventHandler = (
-	width: number,
-	height: number
-) => void;
+export declare type SizeChangeEventHandler = (width: number, height: number) => void;
 /**
  * The `TickMarkFormatter` is used to customize tick mark labels on the time scale.
  *
@@ -1191,11 +1047,7 @@ export declare type SizeChangeEventHandler = (
  * };
  * ```
  */
-export declare type TickMarkFormatter = (
-	time: UTCTimestamp | BusinessDay,
-	tickMarkType: TickMarkType,
-	locale: string
-) => string;
+export declare type TickMarkFormatter = (time: UTCTimestamp | BusinessDay, tickMarkType: TickMarkType, locale: string) => string;
 /**
  * The Time type is used to represent the time of data items.
  *
@@ -1212,9 +1064,7 @@ export declare type Time = UTCTimestamp | BusinessDay | string;
 /**
  * A custom function used to override formatting of a time to a string.
  */
-export declare type TimeFormatterFn = (
-	time: BusinessDay | UTCTimestamp
-) => string;
+export declare type TimeFormatterFn = (time: BusinessDay | UTCTimestamp) => string;
 export declare type TimePointIndex = Nominal<number, "TimePointIndex">;
 export declare type TimePointsRange = Range<TimePoint>;
 /**
@@ -1224,15 +1074,8 @@ export declare type TimeRange = Range<Time>;
 /**
  * A custom function used to handle changes to the time scale's time range.
  */
-export declare type TimeRangeChangeEventHandler = (
-	timeRange: TimeRange | null
-) => void;
-export declare type TimeScaleInvalidation =
-	| TimeScaleApplyRangeInvalidation
-	| TimeScaleFitContentInvalidation
-	| TimeScaleApplyRightOffsetInvalidation
-	| TimeScaleApplyBarSpacingInvalidation
-	| TimeScaleResetInvalidation;
+export declare type TimeRangeChangeEventHandler = (timeRange: TimeRange | null) => void;
+export declare type TimeScaleInvalidation = TimeScaleApplyRangeInvalidation | TimeScaleFitContentInvalidation | TimeScaleApplyRightOffsetInvalidation | TimeScaleApplyBarSpacingInvalidation | TimeScaleResetInvalidation;
 /**
  * Represents a time a a UNIX timestamp.
  *
@@ -2103,9 +1946,7 @@ export interface IChartApi {
 	 * const series = chart.addBaselineSeries();
 	 * ```
 	 */
-	addBaselineSeries(
-		baselineOptions?: BaselineSeriesPartialOptions
-	): ISeriesApi<"Baseline">;
+	addBaselineSeries(baselineOptions?: BaselineSeriesPartialOptions): ISeriesApi<"Baseline">;
 	/**
 	 * Creates a bar series with specified parameters.
 	 *
@@ -2127,9 +1968,7 @@ export interface IChartApi {
 	 * const series = chart.addCandlestickSeries();
 	 * ```
 	 */
-	addCandlestickSeries(
-		candlestickOptions?: CandlestickSeriesPartialOptions
-	): ISeriesApi<"Candlestick">;
+	addCandlestickSeries(candlestickOptions?: CandlestickSeriesPartialOptions): ISeriesApi<"Candlestick">;
 	/**
 	 * Creates a histogram series with specified parameters.
 	 *
@@ -2140,9 +1979,7 @@ export interface IChartApi {
 	 * const series = chart.addHistogramSeries();
 	 * ```
 	 */
-	addHistogramSeries(
-		histogramOptions?: HistogramSeriesPartialOptions
-	): ISeriesApi<"Histogram">;
+	addHistogramSeries(histogramOptions?: HistogramSeriesPartialOptions): ISeriesApi<"Histogram">;
 	/**
 	 * Creates a line series with specified parameters.
 	 *
@@ -2224,17 +2061,13 @@ export interface IChartApi {
 	 *
 	 * @param handler - handler (function) to be called on dragged
 	 */
-	subscribeCustomPriceLineDragged(
-		handler: CustomPriceLineDraggedEventHandler
-	): void;
+	subscribeCustomPriceLineDragged(handler: CustomPriceLineDraggedEventHandler): void;
 	/**
 	 * Removes custom price line dragged subscription
 	 *
 	 * @param handler - previously subscribed handler
 	 */
-	unsubscribeCustomPriceLineDragged(
-		handler: CustomPriceLineDraggedEventHandler
-	): void;
+	unsubscribeCustomPriceLineDragged(handler: CustomPriceLineDraggedEventHandler): void;
 	/**
 	 * Returns API to manipulate a price scale.
 	 *
@@ -2273,10 +2106,7 @@ export interface IDataSource {
 	priceScale(): PriceScale | null;
 	setPriceScale(scale: PriceScale | null): void;
 	updateAllViews(): void;
-	priceAxisViews(
-		pane?: Pane,
-		priceScale?: PriceScale
-	): readonly IPriceAxisView[];
+	priceAxisViews(pane?: Pane, priceScale?: PriceScale): readonly IPriceAxisView[];
 	timeAxisViews(): readonly ITimeAxisView[];
 	paneViews(pane: Pane): readonly IPaneView[];
 	/**
@@ -2301,34 +2131,17 @@ export interface IDestroyable {
 	destroy(): void;
 }
 export interface IPaneRenderer {
-	draw(
-		ctx: CanvasRenderingContext2D,
-		pixelRatio: number,
-		isHovered: boolean,
-		hitTestData?: unknown
-	): void;
-	drawBackground?(
-		ctx: CanvasRenderingContext2D,
-		pixelRatio: number,
-		isHovered: boolean,
-		hitTestData?: unknown
-	): void;
+	draw(ctx: CanvasRenderingContext2D, pixelRatio: number, isHovered: boolean, hitTestData?: unknown): void;
+	drawBackground?(ctx: CanvasRenderingContext2D, pixelRatio: number, isHovered: boolean, hitTestData?: unknown): void;
 	hitTest?(x: Coordinate, y: Coordinate): HoveredObject | null;
 }
 export interface IPaneView {
-	renderer(
-		height: number,
-		width: number,
-		addAnchors?: boolean
-	): IPaneRenderer | null;
+	renderer(height: number, width: number, addAnchors?: boolean): IPaneRenderer | null;
 }
 export interface IPriceAxisView {
 	coordinate(): number;
 	getFixedCoordinate(): number;
-	height(
-		rendererOptions: PriceAxisViewRendererOptions,
-		useSecondLine?: boolean
-	): number;
+	height(rendererOptions: PriceAxisViewRendererOptions, useSecondLine?: boolean): number;
 	isVisible(): boolean;
 	isAxisLabelVisible(): boolean;
 	renderer(priceScale: PriceScale): IPriceAxisViewRenderer;
@@ -2338,22 +2151,9 @@ export interface IPriceAxisView {
 	update(): void;
 }
 export interface IPriceAxisViewRenderer {
-	draw(
-		ctx: CanvasRenderingContext2D,
-		rendererOptions: PriceAxisViewRendererOptions,
-		textWidthCache: TextWidthCache,
-		width: number,
-		align: "left" | "right",
-		pixelRatio: number
-	): void;
-	height(
-		rendererOptions: PriceAxisViewRendererOptions,
-		useSecondLine: boolean
-	): number;
-	setData(
-		data: PriceAxisViewRendererData,
-		commonData: PriceAxisViewRendererCommonData
-	): void;
+	draw(ctx: CanvasRenderingContext2D, rendererOptions: PriceAxisViewRendererOptions, textWidthCache: TextWidthCache, width: number, align: "left" | "right", pixelRatio: number): void;
+	height(rendererOptions: PriceAxisViewRendererOptions, useSecondLine: boolean): number;
+	setData(data: PriceAxisViewRendererData, commonData: PriceAxisViewRendererCommonData): void;
 }
 export interface IPriceDataSource extends IDataSource {
 	firstValue(): FirstValue | null;
@@ -2361,10 +2161,7 @@ export interface IPriceDataSource extends IDataSource {
 	priceLineColor(lastBarColor: string): string;
 	model(): ChartModel;
 	minMove(): number;
-	autoscaleInfo(
-		startTimePoint: TimePointIndex,
-		endTimePoint: TimePointIndex
-	): AutoscaleInfoImpl | null;
+	autoscaleInfo(startTimePoint: TimePointIndex, endTimePoint: TimePointIndex): AutoscaleInfoImpl | null;
 }
 /** Interface to be implemented by the object in order to be used as a price formatter */
 export interface IPriceFormatter {
@@ -2658,11 +2455,7 @@ export interface ISeriesApi<TSeriesType extends SeriesType> {
 	seriesType(): TSeriesType;
 }
 export interface ISubscription<T1 = void, T2 = void> {
-	subscribe(
-		callback: Callback<T1, T2>,
-		linkedObject?: unknown,
-		singleshot?: boolean
-	): void;
+	subscribe(callback: Callback<T1, T2>, linkedObject?: unknown, singleshot?: boolean): void;
 	unsubscribe(callback: Callback<T1, T2>): void;
 	unsubscribeAll(linkedObject: unknown): void;
 }
@@ -2670,11 +2463,7 @@ export interface ITimeAxisView {
 	renderer(): TimeAxisViewRenderer;
 }
 export interface ITimeAxisViewRenderer {
-	draw(
-		ctx: CanvasRenderingContext2D,
-		rendererOptions: TimeAxisViewRendererOptions,
-		pixelRatio: number
-	): void;
+	draw(ctx: CanvasRenderingContext2D, rendererOptions: TimeAxisViewRendererOptions, pixelRatio: number): void;
 }
 /** Interface to chart time scale */
 export interface ITimeScaleApi {
@@ -2829,9 +2618,7 @@ export interface ITimeScaleApi {
 	 * chart.timeScale().subscribeVisibleLogicalRangeChange(myVisibleLogicalRangeChangeHandler);
 	 * ```
 	 */
-	subscribeVisibleLogicalRangeChange(
-		handler: LogicalRangeChangeEventHandler
-	): void;
+	subscribeVisibleLogicalRangeChange(handler: LogicalRangeChangeEventHandler): void;
 	/**
 	 * Unsubscribe a handler that was previously subscribed using {@link subscribeVisibleLogicalRangeChange}.
 	 *
@@ -2841,9 +2628,7 @@ export interface ITimeScaleApi {
 	 * chart.timeScale().unsubscribeVisibleLogicalRangeChange(myVisibleLogicalRangeChangeHandler);
 	 * ```
 	 */
-	unsubscribeVisibleLogicalRangeChange(
-		handler: LogicalRangeChangeEventHandler
-	): void;
+	unsubscribeVisibleLogicalRangeChange(handler: LogicalRangeChangeEventHandler): void;
 	/**
 	 * Adds a subscription to time scale size changes
 	 *
@@ -3268,9 +3053,9 @@ export interface PriceLineOptions {
 	 */
 	draggable: boolean;
 	/**
-	 * For you, the user to identify which price line has clicked/changed
+	 * arbitrary id
 	 *
-	 * @defaultValue `''`
+	 * @defaultValue ``
 	 */
 	id: string;
 }
@@ -3982,6 +3767,8 @@ export interface WhitespaceData {
 	time: Time;
 }
 
-export { LastPriceAnimationMode as LasPriceAnimationMode };
+export {
+	LastPriceAnimationMode as LasPriceAnimationMode,
+};
 
 export {};

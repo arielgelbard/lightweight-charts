@@ -52,6 +52,10 @@ export interface PriceLineOptions {
 	 * @defaultValue `false`
 	 */
 	draggable: boolean;
-
+	/**
+	 * arbitrary id
+	 *
+	 * @defaultValue ``
+	 */
 	id: string;
 }
