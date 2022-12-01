@@ -350,7 +350,9 @@ export class Series<T extends SeriesType = SeriesType>
 	}
 
 	public createPriceLine(options: PriceLineOptions): CustomPriceLine {
+		console.log("here1", options);
 		const result = new CustomPriceLine(this, options);
+		console.log("here2", result);
 		this._customPriceLines.push(result);
 		this.model().updateSource(this);
 		return result;
