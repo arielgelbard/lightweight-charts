@@ -20,6 +20,8 @@ export class CustomPriceLine {
 	public constructor(series: Series, options: PriceLineOptions) {
 		this._series = series;
 		this._options = options;
+
+		// @ts-ignore
 		console.log("here5", this._options, options);
 		this._priceLineView = new CustomPriceLinePaneView(series, this);
 		this._priceAxisView = new CustomPriceLinePriceAxisView(series, this);
@@ -31,6 +33,7 @@ export class CustomPriceLine {
 	}
 
 	public applyOptions(options: Partial<PriceLineOptions>): void {
+		// @ts-ignore
 		console.log("here4", this._options, options);
 		merge(this._options, options);
 		this.update();
@@ -38,6 +41,7 @@ export class CustomPriceLine {
 	}
 
 	public options(): PriceLineOptions {
+		// @ts-ignore
 		console.log("here3", this._options);
 		return this._options;
 	}

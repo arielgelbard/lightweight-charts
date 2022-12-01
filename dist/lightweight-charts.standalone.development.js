@@ -1,6 +1,6 @@
 /*!
  * @license
- * TradingView Lightweight Charts v3.8.0-dev+202212010147
+ * TradingView Lightweight Charts v3.8.0-dev+202212010216
  * Copyright (c) 2020 TradingView, Inc.
  * Licensed under Apache License 2.0 https://www.apache.org/licenses/LICENSE-2.0
  */
@@ -3834,18 +3834,21 @@
         function CustomPriceLine(series, options) {
             this._private__series = series;
             this._private__options = options;
+            // @ts-ignore
             console.log("here5", this._private__options, options);
             this._private__priceLineView = new CustomPriceLinePaneView(series, this);
             this._private__priceAxisView = new CustomPriceLinePriceAxisView(series, this);
             this._private__panePriceAxisView = new PanePriceAxisView(this._private__priceAxisView, series, series.model());
         }
         CustomPriceLine.prototype.applyOptions = function (options) {
+            // @ts-ignore
             console.log("here4", this._private__options, options);
             merge(this._private__options, options);
             this.update();
             this._private__series.model().lightUpdate();
         };
         CustomPriceLine.prototype.options = function () {
+            // @ts-ignore
             console.log("here3", this._private__options);
             return this._private__options;
         };
@@ -4592,8 +4595,10 @@
             return this._private__indexedMarkers;
         };
         Series.prototype.createPriceLine = function (options) {
+            // @ts-ignore
             console.log("here1", options);
             var result = new CustomPriceLine(this, options);
+            // @ts-ignore
             console.log("here2", result);
             this._private__customPriceLines.push(result);
             this.model().updateSource(this);
@@ -11806,10 +11811,12 @@
             this._private__priceLine = priceLine;
         }
         PriceLine.prototype.applyOptions = function (options) {
+            // @ts-ignore
             console.log("here9", options);
             this._private__priceLine.applyOptions(options);
         };
         PriceLine.prototype.options = function () {
+            // @ts-ignore
             console.log("here10", this._private__priceLine.options());
             return this._private__priceLine.options();
         };
@@ -11956,8 +11963,10 @@
         };
         SeriesApi.prototype.createPriceLine = function (options) {
             checkPriceLineOptions(options);
+            // @ts-ignore
             console.log("here7", options);
             var strictOptions = merge(clone(priceLineOptionsDefaults), options);
+            // @ts-ignore
             console.log("here6", strictOptions);
             var priceLine = this._internal__series.createPriceLine(strictOptions);
             return new PriceLine(priceLine);
@@ -12713,7 +12722,7 @@
      * Returns the current version as a string. For example `'3.3.0'`.
      */
     function version() {
-        return "3.8.0-dev+202212010147";
+        return "3.8.0-dev+202212010216";
     }
 
     var LightweightChartsModule = /*#__PURE__*/Object.freeze({

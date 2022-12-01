@@ -11,10 +11,12 @@ export class PriceLine implements IPriceLine {
 	}
 
 	public applyOptions(options: Partial<PriceLineOptions>): void {
+		// @ts-ignore
 		console.log("here9", options);
 		this._priceLine.applyOptions(options);
 	}
 	public options(): Readonly<PriceLineOptions> {
+		// @ts-ignore
 		console.log("here10", this._priceLine.options());
 		return this._priceLine.options();
 	}

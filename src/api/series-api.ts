@@ -204,6 +204,7 @@ export class SeriesApi<TSeriesType extends SeriesType>
 
 	public createPriceLine(options: PriceLineOptions): IPriceLine {
 		checkPriceLineOptions(options);
+		// @ts-ignore
 		console.log("here7", options);
 
 		const strictOptions = merge(
@@ -211,6 +212,7 @@ export class SeriesApi<TSeriesType extends SeriesType>
 			options
 		) as PriceLineOptions;
 
+		// @ts-ignore
 		console.log("here6", strictOptions);
 		const priceLine = this._series.createPriceLine(strictOptions);
 		return new PriceLine(priceLine);
