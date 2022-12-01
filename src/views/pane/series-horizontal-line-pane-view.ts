@@ -19,7 +19,7 @@ export abstract class SeriesHorizontalLinePaneView implements IPaneView {
 		lineWidth: 1,
 		lineStyle: LineStyle.Solid,
 		visible: false,
-		id: "",
+		idd: "",
 	};
 
 	protected readonly _series: Series;

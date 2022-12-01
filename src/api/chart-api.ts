@@ -1,14 +1,25 @@
-import { ChartWidget, CustomPriceLineDraggedEventParamsImpl, CustomPriceLineDraggedEventParamsImplSupplier, MouseEventParamsImpl, MouseEventParamsImplSupplier } from '../gui/chart-widget';
+import {
+	ChartWidget,
+	CustomPriceLineDraggedEventParamsImpl,
+	CustomPriceLineDraggedEventParamsImplSupplier,
+	MouseEventParamsImpl,
+	MouseEventParamsImplSupplier,
+} from "../gui/chart-widget";
 
-import { ensureDefined } from '../helpers/assertions';
-import { Delegate } from '../helpers/delegate';
-import { warn } from '../helpers/logger';
-import { clone, DeepPartial, isBoolean, merge } from '../helpers/strict-type-checks';
+import { ensureDefined } from "../helpers/assertions";
+import { Delegate } from "../helpers/delegate";
+import { warn } from "../helpers/logger";
+import {
+	clone,
+	DeepPartial,
+	isBoolean,
+	merge,
+} from "../helpers/strict-type-checks";
 
-import { BarPrice, BarPrices } from '../model/bar';
-import { ChartOptions, ChartOptionsInternal } from '../model/chart-model';
-import { ColorType } from '../model/layout-options';
-import { Series } from '../model/series';
+import { BarPrice, BarPrices } from "../model/bar";
+import { ChartOptions, ChartOptionsInternal } from "../model/chart-model";
+import { ColorType } from "../model/layout-options";
+import { Series } from "../model/series";
 import {
 	AreaSeriesOptions,
 	AreaSeriesPartialOptions,
@@ -27,16 +38,22 @@ import {
 	PriceFormat,
 	PriceFormatBuiltIn,
 	SeriesType,
-} from '../model/series-options';
+} from "../model/series-options";
 
-import { CandlestickSeriesApi } from './candlestick-series-api';
-import { DataUpdatesConsumer, SeriesDataItemTypeMap } from './data-consumer';
-import { DataLayer, DataUpdateResponse, SeriesChanges } from './data-layer';
-import { CustomPriceLineDraggedEventHandler, CustomPriceLineDraggedEventParams, IChartApi, MouseEventHandler, MouseEventParams } from './ichart-api';
-import { IPriceScaleApi } from './iprice-scale-api';
-import { ISeriesApi } from './iseries-api';
-import { ITimeScaleApi } from './itime-scale-api';
-import { chartOptionsDefaults } from './options/chart-options-defaults';
+import { CandlestickSeriesApi } from "./candlestick-series-api";
+import { DataUpdatesConsumer, SeriesDataItemTypeMap } from "./data-consumer";
+import { DataLayer, DataUpdateResponse, SeriesChanges } from "./data-layer";
+import {
+	CustomPriceLineDraggedEventHandler,
+	CustomPriceLineDraggedEventParams,
+	IChartApi,
+	MouseEventHandler,
+	MouseEventParams,
+} from "./ichart-api";
+import { IPriceScaleApi } from "./iprice-scale-api";
+import { ISeriesApi } from "./iseries-api";
+import { ITimeScaleApi } from "./itime-scale-api";
+import { chartOptionsDefaults } from "./options/chart-options-defaults";
 import {
 	areaStyleDefaults,
 	barStyleDefaults,
@@ -45,22 +62,29 @@ import {
 	histogramStyleDefaults,
 	lineStyleDefaults,
 	seriesOptionsDefaults,
-} from './options/series-options-defaults';
-import { PriceScaleApi } from './price-scale-api';
-import { migrateOptions, SeriesApi } from './series-api';
-import { TimeScaleApi } from './time-scale-api';
+} from "./options/series-options-defaults";
+import { PriceScaleApi } from "./price-scale-api";
+import { migrateOptions, SeriesApi } from "./series-api";
+import { TimeScaleApi } from "./time-scale-api";
 
 function patchPriceFormat(priceFormat?: DeepPartial<PriceFormat>): void {
-	if (priceFormat === undefined || priceFormat.type === 'custom') {
+	if (priceFormat === undefined || priceFormat.type === "custom") {
 		return;
 	}
 	const priceFormatBuiltIn = priceFormat as DeepPartial<PriceFormatBuiltIn>;
-	if (priceFormatBuiltIn.minMove !== undefined && priceFormatBuiltIn.precision === undefined) {
-		priceFormatBuiltIn.precision = precisionByMinMove(priceFormatBuiltIn.minMove);
+	if (
+		priceFormatBuiltIn.minMove !== undefined &&
+		priceFormatBuiltIn.precision === undefined
+	) {
+		priceFormatBuiltIn.precision = precisionByMinMove(
+			priceFormatBuiltIn.minMove
+		);
 	}
 }
 
-function migrateHandleScaleScrollOptions(options: DeepPartial<ChartOptions>): void {
+function migrateHandleScaleScrollOptions(
+	options: DeepPartial<ChartOptions>
+): void {
 	if (isBoolean(options.handleScale)) {
 		const handleScale = options.handleScale;
 		options.handleScale = {
@@ -72,7 +96,10 @@ function migrateHandleScaleScrollOptions(options: DeepPartial<ChartOptions>): vo
 			mouseWheel: handleScale,
 			pinch: handleScale,
 		};
-	} else if (options.handleScale !== undefined && isBoolean(options.handleScale.axisPressedMouseMove)) {
+	} else if (
+		options.handleScale !== undefined &&
+		isBoolean(options.handleScale.axisPressedMouseMove)
+	) {
 		const axisPressedMouseMove = options.handleScale.axisPressedMouseMove;
 		options.handleScale.axisPressedMouseMove = {
 			time: axisPressedMouseMove,
@@ -94,7 +121,9 @@ function migrateHandleScaleScrollOptions(options: DeepPartial<ChartOptions>): vo
 function migratePriceScaleOptions(options: DeepPartial<ChartOptions>): void {
 	/* eslint-disable deprecation/deprecation */
 	if (options.priceScale) {
-		warn('"priceScale" option has been deprecated, use "leftPriceScale", "rightPriceScale" and "overlayPriceScales" instead');
+		warn(
+			'"priceScale" option has been deprecated, use "leftPriceScale", "rightPriceScale" and "overlayPriceScales" instead'
+		);
 
 		options.leftPriceScale = options.leftPriceScale || {};
 		options.rightPriceScale = options.rightPriceScale || {};
@@ -103,17 +132,20 @@ function migratePriceScaleOptions(options: DeepPartial<ChartOptions>): void {
 		delete options.priceScale.position;
 
 		options.leftPriceScale = merge(options.leftPriceScale, options.priceScale);
-		options.rightPriceScale = merge(options.rightPriceScale, options.priceScale);
+		options.rightPriceScale = merge(
+			options.rightPriceScale,
+			options.priceScale
+		);
 
-		if (position === 'left') {
+		if (position === "left") {
 			options.leftPriceScale.visible = true;
 			options.rightPriceScale.visible = false;
 		}
-		if (position === 'right') {
+		if (position === "right") {
 			options.leftPriceScale.visible = false;
 			options.rightPriceScale.visible = true;
 		}
-		if (position === 'none') {
+		if (position === "none") {
 			options.leftPriceScale.visible = false;
 			options.rightPriceScale.visible = false;
 		}
@@ -136,12 +168,17 @@ export function migrateLayoutOptions(options: DeepPartial<ChartOptions>): void {
 		return;
 	}
 	if (options.layout.backgroundColor && !options.layout.background) {
-		options.layout.background = { type: ColorType.Solid, color: options.layout.backgroundColor };
+		options.layout.background = {
+			type: ColorType.Solid,
+			color: options.layout.backgroundColor,
+		};
 	}
 	/* eslint-enable deprecation/deprecation */
 }
 
-function toInternalOptions(options: DeepPartial<ChartOptions>): DeepPartial<ChartOptionsInternal> {
+function toInternalOptions(
+	options: DeepPartial<ChartOptions>
+): DeepPartial<ChartOptionsInternal> {
 	migrateHandleScaleScrollOptions(options);
 	migratePriceScaleOptions(options);
 	migrateLayoutOptions(options);
@@ -149,54 +186,72 @@ function toInternalOptions(options: DeepPartial<ChartOptions>): DeepPartial<Char
 	return options as DeepPartial<ChartOptionsInternal>;
 }
 
-export type IPriceScaleApiProvider = Pick<IChartApi, 'priceScale'>;
+export type IPriceScaleApiProvider = Pick<IChartApi, "priceScale">;
 
 export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 	private _chartWidget: ChartWidget;
 	private _dataLayer: DataLayer = new DataLayer();
 	private readonly _seriesMap: Map<SeriesApi<SeriesType>, Series> = new Map();
-	private readonly _seriesMapReversed: Map<Series, SeriesApi<SeriesType>> = new Map();
+	private readonly _seriesMapReversed: Map<Series, SeriesApi<SeriesType>> =
+		new Map();
 
-	private readonly _clickedDelegate: Delegate<MouseEventParams> = new Delegate();
-	private readonly _crosshairMovedDelegate: Delegate<MouseEventParams> = new Delegate();
-	private readonly _customPriceLineDraggedDelegate: Delegate<CustomPriceLineDraggedEventParams> = new Delegate();
+	private readonly _clickedDelegate: Delegate<MouseEventParams> =
+		new Delegate();
+	private readonly _crosshairMovedDelegate: Delegate<MouseEventParams> =
+		new Delegate();
+	private readonly _customPriceLineDraggedDelegate: Delegate<CustomPriceLineDraggedEventParams> =
+		new Delegate();
 
 	private readonly _timeScaleApi: TimeScaleApi;
 
-	public constructor(container: HTMLElement, options?: DeepPartial<ChartOptions>) {
-		const internalOptions = (options === undefined) ?
-			clone(chartOptionsDefaults) :
-			merge(clone(chartOptionsDefaults), toInternalOptions(options)) as ChartOptionsInternal;
+	public constructor(
+		container: HTMLElement,
+		options?: DeepPartial<ChartOptions>
+	) {
+		const internalOptions =
+			options === undefined
+				? clone(chartOptionsDefaults)
+				: (merge(
+						clone(chartOptionsDefaults),
+						toInternalOptions(options)
+				  ) as ChartOptionsInternal);
 
 		this._chartWidget = new ChartWidget(container, internalOptions);
 
-		this._chartWidget.clicked().subscribe(
-			(paramSupplier: MouseEventParamsImplSupplier) => {
+		this._chartWidget
+			.clicked()
+			.subscribe((paramSupplier: MouseEventParamsImplSupplier) => {
 				if (this._clickedDelegate.hasListeners()) {
 					this._clickedDelegate.fire(this._convertMouseParams(paramSupplier()));
 				}
-			},
-			this
-		);
-		this._chartWidget.crosshairMoved().subscribe(
-			(paramSupplier: MouseEventParamsImplSupplier) => {
+			}, this);
+		this._chartWidget
+			.crosshairMoved()
+			.subscribe((paramSupplier: MouseEventParamsImplSupplier) => {
 				if (this._crosshairMovedDelegate.hasListeners()) {
-					this._crosshairMovedDelegate.fire(this._convertMouseParams(paramSupplier()));
+					this._crosshairMovedDelegate.fire(
+						this._convertMouseParams(paramSupplier())
+					);
 				}
-			},
-			this
-		);
-		this._chartWidget.customPriceLineDragged().subscribe(
-			(paramSupplier: CustomPriceLineDraggedEventParamsImplSupplier) => {
-				if (this._customPriceLineDraggedDelegate.hasListeners()) {
-					this._customPriceLineDraggedDelegate.fire(this._convertCustomPriceLineDraggedParams(paramSupplier()));
-				}
-			},
-			this
-		);
+			}, this);
+		this._chartWidget
+			.customPriceLineDragged()
+			.subscribe(
+				(paramSupplier: CustomPriceLineDraggedEventParamsImplSupplier) => {
+					if (this._customPriceLineDraggedDelegate.hasListeners()) {
+						this._customPriceLineDraggedDelegate.fire(
+							this._convertCustomPriceLineDraggedParams(paramSupplier())
+						);
+					}
+				},
+				this
+			);
 
 		const model = this._chartWidget.model();
-		this._timeScaleApi = new TimeScaleApi(model, this._chartWidget.timeAxisWidget());
+		this._timeScaleApi = new TimeScaleApi(
+			model,
+			this._chartWidget.timeAxisWidget()
+		);
 	}
 
 	public remove(): void {
@@ -220,56 +275,86 @@ export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 		this._chartWidget.resize(width, height, forceRepaint);
 	}
 
-	public addAreaSeries(options: AreaSeriesPartialOptions = {}): ISeriesApi<'Area'> {
+	public addAreaSeries(
+		options: AreaSeriesPartialOptions = {}
+	): ISeriesApi<"Area"> {
 		options = migrateOptions(options);
 		patchPriceFormat(options.priceFormat);
 
-		const strictOptions = merge(clone(seriesOptionsDefaults), areaStyleDefaults, options) as AreaSeriesOptions;
-		const series = this._chartWidget.model().createSeries('Area', strictOptions);
+		const strictOptions = merge(
+			clone(seriesOptionsDefaults),
+			areaStyleDefaults,
+			options
+		) as AreaSeriesOptions;
+		const series = this._chartWidget
+			.model()
+			.createSeries("Area", strictOptions);
 
-		const res = new SeriesApi<'Area'>(series, this, this);
+		const res = new SeriesApi<"Area">(series, this, this);
 		this._seriesMap.set(res, series);
 		this._seriesMapReversed.set(series, res);
 
 		return res;
 	}
 
-	public addBaselineSeries(options: BaselineSeriesPartialOptions = {}): ISeriesApi<'Baseline'> {
+	public addBaselineSeries(
+		options: BaselineSeriesPartialOptions = {}
+	): ISeriesApi<"Baseline"> {
 		options = migrateOptions(options);
 		patchPriceFormat(options.priceFormat);
 
 		// to avoid assigning fields to defaults we have to clone them
-		const strictOptions = merge(clone(seriesOptionsDefaults), clone(baselineStyleDefaults), options) as BaselineSeriesOptions;
-		const series = this._chartWidget.model().createSeries('Baseline', strictOptions);
+		const strictOptions = merge(
+			clone(seriesOptionsDefaults),
+			clone(baselineStyleDefaults),
+			options
+		) as BaselineSeriesOptions;
+		const series = this._chartWidget
+			.model()
+			.createSeries("Baseline", strictOptions);
 
-		const res = new SeriesApi<'Baseline'>(series, this, this);
+		const res = new SeriesApi<"Baseline">(series, this, this);
 		this._seriesMap.set(res, series);
 		this._seriesMapReversed.set(series, res);
 
 		return res;
 	}
 
-	public addBarSeries(options: BarSeriesPartialOptions = {}): ISeriesApi<'Bar'> {
+	public addBarSeries(
+		options: BarSeriesPartialOptions = {}
+	): ISeriesApi<"Bar"> {
 		options = migrateOptions(options);
 		patchPriceFormat(options.priceFormat);
 
-		const strictOptions = merge(clone(seriesOptionsDefaults), barStyleDefaults, options) as BarSeriesOptions;
-		const series = this._chartWidget.model().createSeries('Bar', strictOptions);
+		const strictOptions = merge(
+			clone(seriesOptionsDefaults),
+			barStyleDefaults,
+			options
+		) as BarSeriesOptions;
+		const series = this._chartWidget.model().createSeries("Bar", strictOptions);
 
-		const res = new SeriesApi<'Bar'>(series, this, this);
+		const res = new SeriesApi<"Bar">(series, this, this);
 		this._seriesMap.set(res, series);
 		this._seriesMapReversed.set(series, res);
 
 		return res;
 	}
 
-	public addCandlestickSeries(options: CandlestickSeriesPartialOptions = {}): ISeriesApi<'Candlestick'> {
+	public addCandlestickSeries(
+		options: CandlestickSeriesPartialOptions = {}
+	): ISeriesApi<"Candlestick"> {
 		options = migrateOptions(options);
 		fillUpDownCandlesticksColors(options);
 		patchPriceFormat(options.priceFormat);
 
-		const strictOptions = merge(clone(seriesOptionsDefaults), candlestickStyleDefaults, options) as CandlestickSeriesOptions;
-		const series = this._chartWidget.model().createSeries('Candlestick', strictOptions);
+		const strictOptions = merge(
+			clone(seriesOptionsDefaults),
+			candlestickStyleDefaults,
+			options
+		) as CandlestickSeriesOptions;
+		const series = this._chartWidget
+			.model()
+			.createSeries("Candlestick", strictOptions);
 
 		const res = new CandlestickSeriesApi(series, this, this);
 		this._seriesMap.set(res, series);
@@ -278,28 +363,44 @@ export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 		return res;
 	}
 
-	public addHistogramSeries(options: HistogramSeriesPartialOptions = {}): ISeriesApi<'Histogram'> {
+	public addHistogramSeries(
+		options: HistogramSeriesPartialOptions = {}
+	): ISeriesApi<"Histogram"> {
 		options = migrateOptions(options);
 		patchPriceFormat(options.priceFormat);
 
-		const strictOptions = merge(clone(seriesOptionsDefaults), histogramStyleDefaults, options) as HistogramSeriesOptions;
-		const series = this._chartWidget.model().createSeries('Histogram', strictOptions);
+		const strictOptions = merge(
+			clone(seriesOptionsDefaults),
+			histogramStyleDefaults,
+			options
+		) as HistogramSeriesOptions;
+		const series = this._chartWidget
+			.model()
+			.createSeries("Histogram", strictOptions);
 
-		const res = new SeriesApi<'Histogram'>(series, this, this);
+		const res = new SeriesApi<"Histogram">(series, this, this);
 		this._seriesMap.set(res, series);
 		this._seriesMapReversed.set(series, res);
 
 		return res;
 	}
 
-	public addLineSeries(options: LineSeriesPartialOptions = {}): ISeriesApi<'Line'> {
+	public addLineSeries(
+		options: LineSeriesPartialOptions = {}
+	): ISeriesApi<"Line"> {
 		options = migrateOptions(options);
 		patchPriceFormat(options.priceFormat);
 
-		const strictOptions = merge(clone(seriesOptionsDefaults), lineStyleDefaults, options) as LineSeriesOptions;
-		const series = this._chartWidget.model().createSeries('Line', strictOptions);
+		const strictOptions = merge(
+			clone(seriesOptionsDefaults),
+			lineStyleDefaults,
+			options
+		) as LineSeriesOptions;
+		const series = this._chartWidget
+			.model()
+			.createSeries("Line", strictOptions);
 
-		const res = new SeriesApi<'Line'>(series, this, this);
+		const res = new SeriesApi<"Line">(series, this, this);
 		this._seriesMap.set(res, series);
 		this._seriesMapReversed.set(series, res);
 
@@ -319,11 +420,17 @@ export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 		this._seriesMapReversed.delete(series);
 	}
 
-	public applyNewData<TSeriesType extends SeriesType>(series: Series<TSeriesType>, data: SeriesDataItemTypeMap[TSeriesType][]): void {
+	public applyNewData<TSeriesType extends SeriesType>(
+		series: Series<TSeriesType>,
+		data: SeriesDataItemTypeMap[TSeriesType][]
+	): void {
 		this._sendUpdateToChart(this._dataLayer.setSeriesData(series, data));
 	}
 
-	public updateData<TSeriesType extends SeriesType>(series: Series<TSeriesType>, data: SeriesDataItemTypeMap[TSeriesType]): void {
+	public updateData<TSeriesType extends SeriesType>(
+		series: Series<TSeriesType>,
+		data: SeriesDataItemTypeMap[TSeriesType]
+	): void {
 		this._sendUpdateToChart(this._dataLayer.updateSeriesData(series, data));
 	}
 
@@ -343,17 +450,23 @@ export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 		this._crosshairMovedDelegate.unsubscribe(handler);
 	}
 
-	public subscribeCustomPriceLineDragged(handler: CustomPriceLineDraggedEventHandler): void {
+	public subscribeCustomPriceLineDragged(
+		handler: CustomPriceLineDraggedEventHandler
+	): void {
 		this._customPriceLineDraggedDelegate.subscribe(handler);
 	}
 
-	public unsubscribeCustomPriceLineDragged(handler: CustomPriceLineDraggedEventHandler): void {
+	public unsubscribeCustomPriceLineDragged(
+		handler: CustomPriceLineDraggedEventHandler
+	): void {
 		this._customPriceLineDraggedDelegate.unsubscribe(handler);
 	}
 
 	public priceScale(priceScaleId?: string): IPriceScaleApi {
 		if (priceScaleId === undefined) {
-			warn('Using ChartApi.priceScale() method without arguments has been deprecated, pass valid price scale id instead');
+			warn(
+				"Using ChartApi.priceScale() method without arguments has been deprecated, pass valid price scale id instead"
+			);
 			priceScaleId = this._chartWidget.model().defaultVisiblePriceScaleId();
 		}
 
@@ -379,8 +492,14 @@ export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 	private _sendUpdateToChart(update: DataUpdateResponse): void {
 		const model = this._chartWidget.model();
 
-		model.updateTimeScale(update.timeScale.baseIndex, update.timeScale.points, update.timeScale.firstChangedPointIndex);
-		update.series.forEach((value: SeriesChanges, series: Series) => series.setData(value.data, value.info));
+		model.updateTimeScale(
+			update.timeScale.baseIndex,
+			update.timeScale.points,
+			update.timeScale.firstChangedPointIndex
+		);
+		update.series.forEach((value: SeriesChanges, series: Series) =>
+			series.setData(value.data, value.info)
+		);
 
 		model.recalculateAllPanes();
 	}
@@ -390,12 +509,20 @@ export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 	}
 
 	private _convertMouseParams(param: MouseEventParamsImpl): MouseEventParams {
-		const seriesPrices = new Map<ISeriesApi<SeriesType>, BarPrice | BarPrices>();
-		param.seriesPrices.forEach((price: BarPrice | BarPrices, series: Series) => {
-			seriesPrices.set(this._mapSeriesToApi(series), price);
-		});
+		const seriesPrices = new Map<
+			ISeriesApi<SeriesType>,
+			BarPrice | BarPrices
+		>();
+		param.seriesPrices.forEach(
+			(price: BarPrice | BarPrices, series: Series) => {
+				seriesPrices.set(this._mapSeriesToApi(series), price);
+			}
+		);
 
-		const hoveredSeries = param.hoveredSeries === undefined ? undefined : this._mapSeriesToApi(param.hoveredSeries);
+		const hoveredSeries =
+			param.hoveredSeries === undefined
+				? undefined
+				: this._mapSeriesToApi(param.hoveredSeries);
 
 		return {
 			time: param.time && (param.time.businessDay || param.time.timestamp),
@@ -406,7 +533,9 @@ export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 		};
 	}
 
-	private _convertCustomPriceLineDraggedParams(param: CustomPriceLineDraggedEventParamsImpl): CustomPriceLineDraggedEventParams {
+	private _convertCustomPriceLineDraggedParams(
+		param: CustomPriceLineDraggedEventParamsImpl
+	): CustomPriceLineDraggedEventParams {
 		return {
 			customPriceLine: param.customPriceLine,
 			fromPriceString: param.fromPriceString,

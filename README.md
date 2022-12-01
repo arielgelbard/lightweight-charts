@@ -44,7 +44,7 @@ const priceLine: PriceLineOptions = {
 	title: "",
 	lineVisible: false,
 	draggable: false,
-	id: "",
+	idd: "",
 };
 
 const line = lineSeries.createPriceLine(priceLine);

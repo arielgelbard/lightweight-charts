@@ -17,7 +17,7 @@ export interface HorizontalLineRendererData {
 	y: Coordinate;
 	visible?: boolean;
 	width: number;
-	id: string;
+	idd: string;
 }
 
 export class HorizontalLineRenderer implements IPaneRenderer {

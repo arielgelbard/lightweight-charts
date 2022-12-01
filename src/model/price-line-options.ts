@@ -57,5 +57,5 @@ export interface PriceLineOptions {
 	 *
 	 * @defaultValue ``
 	 */
-	id: string;
+	idd: string;
 }

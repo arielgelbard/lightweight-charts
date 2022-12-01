@@ -33,6 +33,6 @@ export class CustomPriceLinePaneView extends SeriesHorizontalLinePaneView {
 		data.height = height;
 		data.lineWidth = lineOptions.lineWidth;
 		data.lineStyle = lineOptions.lineStyle;
-		data.id = lineOptions.id;
+		data.idd = lineOptions.idd;
 	}
 }
