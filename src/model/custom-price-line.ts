@@ -1,14 +1,14 @@
-import { merge } from '../helpers/strict-type-checks';
+import { merge } from "../helpers/strict-type-checks";
 
-import { CustomPriceLinePaneView } from '../views/pane/custom-price-line-pane-view';
-import { IPaneView } from '../views/pane/ipane-view';
-import { PanePriceAxisView } from '../views/pane/pane-price-axis-view';
-import { CustomPriceLinePriceAxisView } from '../views/price-axis/custom-price-line-price-axis-view';
-import { IPriceAxisView } from '../views/price-axis/iprice-axis-view';
+import { CustomPriceLinePaneView } from "../views/pane/custom-price-line-pane-view";
+import { IPaneView } from "../views/pane/ipane-view";
+import { PanePriceAxisView } from "../views/pane/pane-price-axis-view";
+import { CustomPriceLinePriceAxisView } from "../views/price-axis/custom-price-line-price-axis-view";
+import { IPriceAxisView } from "../views/price-axis/iprice-axis-view";
 
-import { Coordinate } from './coordinate';
-import { PriceLineOptions } from './price-line-options';
-import { Series } from './series';
+import { Coordinate } from "./coordinate";
+import { PriceLineOptions } from "./price-line-options";
+import { Series } from "./series";
 
 export class CustomPriceLine {
 	private readonly _series: Series;
@@ -20,26 +20,30 @@ export class CustomPriceLine {
 	public constructor(series: Series, options: PriceLineOptions) {
 		this._series = series;
 		this._options = options;
+		console.log("here5", this._options, options);
 		this._priceLineView = new CustomPriceLinePaneView(series, this);
 		this._priceAxisView = new CustomPriceLinePriceAxisView(series, this);
-		this._panePriceAxisView = new PanePriceAxisView(this._priceAxisView, series, series.model());
+		this._panePriceAxisView = new PanePriceAxisView(
+			this._priceAxisView,
+			series,
+			series.model()
+		);
 	}
 
 	public applyOptions(options: Partial<PriceLineOptions>): void {
+		console.log("here4", this._options, options);
 		merge(this._options, options);
 		this.update();
 		this._series.model().lightUpdate();
 	}
 
 	public options(): PriceLineOptions {
+		console.log("here3", this._options);
 		return this._options;
 	}
 
 	public paneViews(): readonly IPaneView[] {
-		return [
-			this._priceLineView,
-			this._panePriceAxisView,
-		];
+		return [this._priceLineView, this._panePriceAxisView];
 	}
 
 	public priceAxisView(): IPriceAxisView {

@@ -204,11 +204,14 @@ export class SeriesApi<TSeriesType extends SeriesType>
 
 	public createPriceLine(options: PriceLineOptions): IPriceLine {
 		checkPriceLineOptions(options);
+		console.log("here7", options);
 
 		const strictOptions = merge(
 			clone(priceLineOptionsDefaults),
 			options
 		) as PriceLineOptions;
+
+		console.log("here6", strictOptions);
 		const priceLine = this._series.createPriceLine(strictOptions);
 		return new PriceLine(priceLine);
 	}
