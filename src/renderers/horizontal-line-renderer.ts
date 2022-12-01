@@ -1,7 +1,12 @@
-import { Coordinate } from '../model/coordinate';
+import { Coordinate } from "../model/coordinate";
 
-import { drawHorizontalLine, LineStyle, LineWidth, setLineStyle } from './draw-line';
-import { IPaneRenderer } from './ipane-renderer';
+import {
+	drawHorizontalLine,
+	LineStyle,
+	LineWidth,
+	setLineStyle,
+} from "./draw-line";
+import { IPaneRenderer } from "./ipane-renderer";
 
 export interface HorizontalLineRendererData {
 	color: string;
@@ -12,6 +17,7 @@ export interface HorizontalLineRendererData {
 	y: Coordinate;
 	visible?: boolean;
 	width: number;
+	id: string;
 }
 
 export class HorizontalLineRenderer implements IPaneRenderer {
@@ -21,7 +27,12 @@ export class HorizontalLineRenderer implements IPaneRenderer {
 		this._data = data;
 	}
 
-	public draw(ctx: CanvasRenderingContext2D, pixelRatio: number, isHovered: boolean, hitTestData?: unknown): void {
+	public draw(
+		ctx: CanvasRenderingContext2D,
+		pixelRatio: number,
+		isHovered: boolean,
+		hitTestData?: unknown
+	): void {
 		if (this._data === null) {
 			return;
 		}
@@ -37,7 +48,7 @@ export class HorizontalLineRenderer implements IPaneRenderer {
 		}
 
 		const width = Math.ceil(this._data.width * pixelRatio);
-		ctx.lineCap = 'butt';
+		ctx.lineCap = "butt";
 		ctx.strokeStyle = this._data.color;
 		ctx.lineWidth = Math.floor(this._data.lineWidth * pixelRatio);
 		setLineStyle(ctx, this._data.lineStyle);

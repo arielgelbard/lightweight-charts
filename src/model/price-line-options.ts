@@ -1,4 +1,4 @@
-import { LineStyle, LineWidth } from '../renderers/draw-line';
+import { LineStyle, LineWidth } from "../renderers/draw-line";
 
 /**
  * Represents a price line options.
@@ -52,4 +52,6 @@ export interface PriceLineOptions {
 	 * @defaultValue `false`
 	 */
 	draggable: boolean;
+
+	id: string;
 }

@@ -1,7 +1,7 @@
-import { CustomPriceLine } from '../../model/custom-price-line';
-import { Series } from '../../model/series';
+import { CustomPriceLine } from "../../model/custom-price-line";
+import { Series } from "../../model/series";
 
-import { SeriesHorizontalLinePaneView } from './series-horizontal-line-pane-view';
+import { SeriesHorizontalLinePaneView } from "./series-horizontal-line-pane-view";
 
 export class CustomPriceLinePaneView extends SeriesHorizontalLinePaneView {
 	private readonly _priceLine: CustomPriceLine;
@@ -33,5 +33,6 @@ export class CustomPriceLinePaneView extends SeriesHorizontalLinePaneView {
 		data.height = height;
 		data.lineWidth = lineOptions.lineWidth;
 		data.lineStyle = lineOptions.lineStyle;
+		data.id = lineOptions.id;
 	}
 }

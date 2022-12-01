@@ -1,6 +1,6 @@
 /*!
  * @license
- * TradingView Lightweight Charts v3.8.0-dev+202211241619
+ * TradingView Lightweight Charts v3.8.0-dev+202212010034
  * Copyright (c) 2020 TradingView, Inc.
  * Licensed under Apache License 2.0 https://www.apache.org/licenses/LICENSE-2.0
  */
@@ -2952,7 +2952,7 @@
                 return;
             }
             var width = Math.ceil(this._private__data._internal_width * pixelRatio);
-            ctx.lineCap = 'butt';
+            ctx.lineCap = "butt";
             ctx.strokeStyle = this._private__data._internal_color;
             ctx.lineWidth = Math.floor(this._private__data._internal_lineWidth * pixelRatio);
             setLineStyle(ctx, this._private__data._internal_lineStyle);
@@ -2967,10 +2967,11 @@
                 _internal_width: 0,
                 _internal_height: 0,
                 _internal_y: 0,
-                _internal_color: 'rgba(0, 0, 0, 0)',
+                _internal_color: "rgba(0, 0, 0, 0)",
                 _internal_lineWidth: 1,
                 _internal_lineStyle: 0 /* Solid */,
                 _internal_visible: false,
+                _internal_id: "",
             };
             this._internal__lineRenderer = new HorizontalLineRenderer();
             this._private__invalidated = true;
@@ -3787,6 +3788,7 @@
             data._internal_height = height;
             data._internal_lineWidth = lineOptions.lineWidth;
             data._internal_lineStyle = lineOptions.lineStyle;
+            data._internal_id = lineOptions.id;
         };
         return CustomPriceLinePaneView;
     }(SeriesHorizontalLinePaneView));
@@ -11786,14 +11788,15 @@
     }
 
     var priceLineOptionsDefaults = {
-        color: '#FF0000',
+        color: "#FF0000",
         price: 0,
         lineStyle: 2 /* Dashed */,
         lineWidth: 1,
         lineVisible: true,
         axisLabelVisible: true,
-        title: '',
+        title: "",
         draggable: false,
+        id: "",
     };
 
     var PriceLine = /** @class */ (function () {
@@ -12687,7 +12690,7 @@
      * Returns the current version as a string. For example `'3.3.0'`.
      */
     function version() {
-        return "3.8.0-dev+202211241619";
+        return "3.8.0-dev+202212010034";
     }
 
     var LightweightChartsModule = /*#__PURE__*/Object.freeze({
