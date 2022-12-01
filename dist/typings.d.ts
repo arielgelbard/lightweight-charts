@@ -3057,7 +3057,7 @@ export interface PriceLineOptions {
 	 *
 	 * @defaultValue ``
 	 */
-	id: string;
+	idd: string;
 }
 export interface PriceMark {
 	coord: Coordinate;

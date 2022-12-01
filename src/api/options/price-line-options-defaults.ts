@@ -10,5 +10,5 @@ export const priceLineOptionsDefaults: PriceLineOptions = {
 	axisLabelVisible: true,
 	title: "",
 	draggable: false,
-	id: "",
+	idd: "",
 };

@@ -1,6 +1,6 @@
 /*!
  * @license
- * TradingView Lightweight Charts v3.8.0-dev+202212010124
+ * TradingView Lightweight Charts v3.8.0-dev+202212010147
  * Copyright (c) 2020 TradingView, Inc.
  * Licensed under Apache License 2.0 https://www.apache.org/licenses/LICENSE-2.0
  */
@@ -2971,7 +2971,7 @@
                 _internal_lineWidth: 1,
                 _internal_lineStyle: 0 /* Solid */,
                 _internal_visible: false,
-                _internal_id: "",
+                _internal_idd: "",
             };
             this._internal__lineRenderer = new HorizontalLineRenderer();
             this._private__invalidated = true;
@@ -3788,7 +3788,7 @@
             data._internal_height = height;
             data._internal_lineWidth = lineOptions.lineWidth;
             data._internal_lineStyle = lineOptions.lineStyle;
-            data._internal_id = lineOptions.id;
+            data._internal_idd = lineOptions.idd;
         };
         return CustomPriceLinePaneView;
     }(SeriesHorizontalLinePaneView));
@@ -3834,23 +3834,23 @@
         function CustomPriceLine(series, options) {
             this._private__series = series;
             this._private__options = options;
+            console.log("here5", this._private__options, options);
             this._private__priceLineView = new CustomPriceLinePaneView(series, this);
             this._private__priceAxisView = new CustomPriceLinePriceAxisView(series, this);
             this._private__panePriceAxisView = new PanePriceAxisView(this._private__priceAxisView, series, series.model());
         }
         CustomPriceLine.prototype.applyOptions = function (options) {
+            console.log("here4", this._private__options, options);
             merge(this._private__options, options);
             this.update();
             this._private__series.model().lightUpdate();
         };
         CustomPriceLine.prototype.options = function () {
+            console.log("here3", this._private__options);
             return this._private__options;
         };
         CustomPriceLine.prototype.paneViews = function () {
-            return [
-                this._private__priceLineView,
-                this._private__panePriceAxisView,
-            ];
+            return [this._private__priceLineView, this._private__panePriceAxisView];
         };
         CustomPriceLine.prototype.priceAxisView = function () {
             return this._private__priceAxisView;
@@ -11798,7 +11798,7 @@
         axisLabelVisible: true,
         title: "",
         draggable: false,
-        id: "",
+        idd: "",
     };
 
     var PriceLine = /** @class */ (function () {
@@ -11806,9 +11806,11 @@
             this._private__priceLine = priceLine;
         }
         PriceLine.prototype.applyOptions = function (options) {
+            console.log("here9", options);
             this._private__priceLine.applyOptions(options);
         };
         PriceLine.prototype.options = function () {
+            console.log("here10", this._private__priceLine.options());
             return this._private__priceLine.options();
         };
         PriceLine.prototype._internal_priceLine = function () {
@@ -11954,7 +11956,9 @@
         };
         SeriesApi.prototype.createPriceLine = function (options) {
             checkPriceLineOptions(options);
+            console.log("here7", options);
             var strictOptions = merge(clone(priceLineOptionsDefaults), options);
+            console.log("here6", strictOptions);
             var priceLine = this._internal__series.createPriceLine(strictOptions);
             return new PriceLine(priceLine);
         };
@@ -12379,11 +12383,12 @@
     }());
 
     function patchPriceFormat(priceFormat) {
-        if (priceFormat === undefined || priceFormat.type === 'custom') {
+        if (priceFormat === undefined || priceFormat.type === "custom") {
             return;
         }
         var priceFormatBuiltIn = priceFormat;
-        if (priceFormatBuiltIn.minMove !== undefined && priceFormatBuiltIn.precision === undefined) {
+        if (priceFormatBuiltIn.minMove !== undefined &&
+            priceFormatBuiltIn.precision === undefined) {
             priceFormatBuiltIn.precision = precisionByMinMove(priceFormatBuiltIn.minMove);
         }
     }
@@ -12400,7 +12405,8 @@
                 pinch: handleScale,
             };
         }
-        else if (options.handleScale !== undefined && isBoolean(options.handleScale.axisPressedMouseMove)) {
+        else if (options.handleScale !== undefined &&
+            isBoolean(options.handleScale.axisPressedMouseMove)) {
             var axisPressedMouseMove = options.handleScale.axisPressedMouseMove;
             options.handleScale.axisPressedMouseMove = {
                 time: axisPressedMouseMove,
@@ -12427,15 +12433,15 @@
             delete options.priceScale.position;
             options.leftPriceScale = merge(options.leftPriceScale, options.priceScale);
             options.rightPriceScale = merge(options.rightPriceScale, options.priceScale);
-            if (position === 'left') {
+            if (position === "left") {
                 options.leftPriceScale.visible = true;
                 options.rightPriceScale.visible = false;
             }
-            if (position === 'right') {
+            if (position === "right") {
                 options.leftPriceScale.visible = false;
                 options.rightPriceScale.visible = true;
             }
-            if (position === 'none') {
+            if (position === "none") {
                 options.leftPriceScale.visible = false;
                 options.rightPriceScale.visible = false;
             }
@@ -12457,7 +12463,10 @@
             return;
         }
         if (options.layout.backgroundColor && !options.layout.background) {
-            options.layout.background = { type: "solid" /* Solid */, color: options.layout.backgroundColor };
+            options.layout.background = {
+                type: "solid" /* Solid */,
+                color: options.layout.backgroundColor,
+            };
         }
         /* eslint-enable deprecation/deprecation */
     }
@@ -12476,21 +12485,24 @@
             this._private__clickedDelegate = new Delegate();
             this._private__crosshairMovedDelegate = new Delegate();
             this._private__customPriceLineDraggedDelegate = new Delegate();
-            var internalOptions = (options === undefined) ?
-                clone(chartOptionsDefaults) :
-                merge(clone(chartOptionsDefaults), toInternalOptions(options));
+            var internalOptions = options === undefined
+                ? clone(chartOptionsDefaults)
+                : merge(clone(chartOptionsDefaults), toInternalOptions(options));
             this._private__chartWidget = new ChartWidget(container, internalOptions);
-            this._private__chartWidget._internal_clicked().subscribe(function (paramSupplier) {
+            this._private__chartWidget._internal_clicked()
+                .subscribe(function (paramSupplier) {
                 if (_this._private__clickedDelegate._internal_hasListeners()) {
                     _this._private__clickedDelegate._internal_fire(_this._private__convertMouseParams(paramSupplier()));
                 }
             }, this);
-            this._private__chartWidget._internal_crosshairMoved().subscribe(function (paramSupplier) {
+            this._private__chartWidget._internal_crosshairMoved()
+                .subscribe(function (paramSupplier) {
                 if (_this._private__crosshairMovedDelegate._internal_hasListeners()) {
                     _this._private__crosshairMovedDelegate._internal_fire(_this._private__convertMouseParams(paramSupplier()));
                 }
             }, this);
-            this._private__chartWidget._internal_customPriceLineDragged().subscribe(function (paramSupplier) {
+            this._private__chartWidget._internal_customPriceLineDragged()
+                .subscribe(function (paramSupplier) {
                 if (_this._private__customPriceLineDraggedDelegate._internal_hasListeners()) {
                     _this._private__customPriceLineDraggedDelegate._internal_fire(_this._private__convertCustomPriceLineDraggedParams(paramSupplier()));
                 }
@@ -12519,7 +12531,8 @@
             options = migrateOptions(options);
             patchPriceFormat(options.priceFormat);
             var strictOptions = merge(clone(seriesOptionsDefaults), areaStyleDefaults, options);
-            var series = this._private__chartWidget._internal_model().createSeries('Area', strictOptions);
+            var series = this._private__chartWidget._internal_model()
+                .createSeries("Area", strictOptions);
             var res = new SeriesApi(series, this, this);
             this._private__seriesMap.set(res, series);
             this._private__seriesMapReversed.set(series, res);
@@ -12531,7 +12544,8 @@
             patchPriceFormat(options.priceFormat);
             // to avoid assigning fields to defaults we have to clone them
             var strictOptions = merge(clone(seriesOptionsDefaults), clone(baselineStyleDefaults), options);
-            var series = this._private__chartWidget._internal_model().createSeries('Baseline', strictOptions);
+            var series = this._private__chartWidget._internal_model()
+                .createSeries("Baseline", strictOptions);
             var res = new SeriesApi(series, this, this);
             this._private__seriesMap.set(res, series);
             this._private__seriesMapReversed.set(series, res);
@@ -12542,7 +12556,7 @@
             options = migrateOptions(options);
             patchPriceFormat(options.priceFormat);
             var strictOptions = merge(clone(seriesOptionsDefaults), barStyleDefaults, options);
-            var series = this._private__chartWidget._internal_model().createSeries('Bar', strictOptions);
+            var series = this._private__chartWidget._internal_model().createSeries("Bar", strictOptions);
             var res = new SeriesApi(series, this, this);
             this._private__seriesMap.set(res, series);
             this._private__seriesMapReversed.set(series, res);
@@ -12554,7 +12568,8 @@
             fillUpDownCandlesticksColors(options);
             patchPriceFormat(options.priceFormat);
             var strictOptions = merge(clone(seriesOptionsDefaults), candlestickStyleDefaults, options);
-            var series = this._private__chartWidget._internal_model().createSeries('Candlestick', strictOptions);
+            var series = this._private__chartWidget._internal_model()
+                .createSeries("Candlestick", strictOptions);
             var res = new CandlestickSeriesApi(series, this, this);
             this._private__seriesMap.set(res, series);
             this._private__seriesMapReversed.set(series, res);
@@ -12565,7 +12580,8 @@
             options = migrateOptions(options);
             patchPriceFormat(options.priceFormat);
             var strictOptions = merge(clone(seriesOptionsDefaults), histogramStyleDefaults, options);
-            var series = this._private__chartWidget._internal_model().createSeries('Histogram', strictOptions);
+            var series = this._private__chartWidget._internal_model()
+                .createSeries("Histogram", strictOptions);
             var res = new SeriesApi(series, this, this);
             this._private__seriesMap.set(res, series);
             this._private__seriesMapReversed.set(series, res);
@@ -12576,7 +12592,8 @@
             options = migrateOptions(options);
             patchPriceFormat(options.priceFormat);
             var strictOptions = merge(clone(seriesOptionsDefaults), lineStyleDefaults, options);
-            var series = this._private__chartWidget._internal_model().createSeries('Line', strictOptions);
+            var series = this._private__chartWidget._internal_model()
+                .createSeries("Line", strictOptions);
             var res = new SeriesApi(series, this, this);
             this._private__seriesMap.set(res, series);
             this._private__seriesMapReversed.set(series, res);
@@ -12617,7 +12634,7 @@
         };
         ChartApi.prototype.priceScale = function (priceScaleId) {
             if (priceScaleId === undefined) {
-                warn('Using ChartApi.priceScale() method without arguments has been deprecated, pass valid price scale id instead');
+                warn("Using ChartApi.priceScale() method without arguments has been deprecated, pass valid price scale id instead");
                 priceScaleId = this._private__chartWidget._internal_model().defaultVisiblePriceScaleId();
             }
             return new PriceScaleApi(this._private__chartWidget, priceScaleId);
@@ -12637,7 +12654,9 @@
         ChartApi.prototype._private__sendUpdateToChart = function (update) {
             var model = this._private__chartWidget._internal_model();
             model.updateTimeScale(update._internal_timeScale._internal_baseIndex, update._internal_timeScale._internal_points, update._internal_timeScale._internal_firstChangedPointIndex);
-            update._internal_series.forEach(function (value, series) { return series.setData(value._internal_data, value._internal_info); });
+            update._internal_series.forEach(function (value, series) {
+                return series.setData(value._internal_data, value._internal_info);
+            });
             model.recalculateAllPanes();
         };
         ChartApi.prototype._private__mapSeriesToApi = function (series) {
@@ -12649,7 +12668,9 @@
             param._internal_seriesPrices.forEach(function (price, series) {
                 seriesPrices.set(_this._private__mapSeriesToApi(series), price);
             });
-            var hoveredSeries = param._internal_hoveredSeries === undefined ? undefined : this._private__mapSeriesToApi(param._internal_hoveredSeries);
+            var hoveredSeries = param._internal_hoveredSeries === undefined
+                ? undefined
+                : this._private__mapSeriesToApi(param._internal_hoveredSeries);
             return {
                 time: param._internal_time && (param._internal_time.businessDay || param._internal_time.timestamp),
                 point: param._internal_point,
@@ -12692,7 +12713,7 @@
      * Returns the current version as a string. For example `'3.3.0'`.
      */
     function version() {
-        return "3.8.0-dev+202212010124";
+        return "3.8.0-dev+202212010147";
     }
 
     var LightweightChartsModule = /*#__PURE__*/Object.freeze({
